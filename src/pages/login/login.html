@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content padding>
-<form (ngSubmit)="login()" [formGroup]="loginForm">
+  <form (ngSubmit)="login()" [formGroup]="loginForm">
     <ion-item>
       <ion-label floating>Email Address</ion-label>
       <ion-input type="text" formControlName="email"></ion-input>
@@ -17,6 +17,6 @@
     </ion-item>
 
     <button ion-button full color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
-    <button ion-button full color="light" (click)="register()">Register</button>
   </form>
+  <button ion-button full color="light" (click)="register()">Register</button>
 </ion-content>
