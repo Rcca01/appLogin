@@ -1,6 +1,6 @@
+import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { User } from '../../shared/models/user';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { HomePage } from '../home/home';
@@ -18,6 +18,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   selector: 'page-cadastro',
   templateUrl: 'cadastro.html',
 })
+
 export class CadastroPage {
 
   cadastroForm:FormGroup;
@@ -41,18 +42,17 @@ export class CadastroPage {
     console.log('ionViewDidLoad CadastroPage');
   }
 
-  async register(){
-    let user:User = this.cadastroForm.value;
-    console.log(user);
+  async register(){    
+    let user = this.cadastroForm.value;
     try{
       const result = await this.afAuth.auth.createUserWithEmailAndPassword(user.email,user.password);
       if(result){
-        this.afBd.list('/users').push(user);
+        delete user.password; //Removendo a senha para não inserir no banco do firebas
+        this.afBd.object('/users/'+result['uid']).set(user);
         this.navCtrl.setRoot(HomePage);
       }
     }catch(e){
       console.error(e);
     }
   }
-
 }
