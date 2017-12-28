@@ -1,10 +1,9 @@
 import { CadastroPage } from './../cadastro/cadastro';
 import { HomePage } from './../home/home';
-import { User } from './../../shared/models/user';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Loading, LoadingController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -28,6 +27,7 @@ export class LoginPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     private afAuth:AngularFireAuth,
+    private loadingCtrl:LoadingController,
     private afBd:AngularFireDatabase,
     private formBuilder:FormBuilder) {
 
@@ -44,7 +44,9 @@ export class LoginPage {
 
   async login(){
     try{
+      let loading:Loading = this.showLoading();
       const result = await this.afAuth.auth.signInWithEmailAndPassword(this.loginForm.value.email,this.loginForm.value.password);
+      loading.dismiss();
       if(result){
         this.navCtrl.setRoot(HomePage);
       }
@@ -61,6 +63,14 @@ export class LoginPage {
     return this.afBd.list('users').snapshotChanges().map(changes => {
       return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
     });
+  }
+
+  private showLoading():Loading{
+    let loading:Loading = this.loadingCtrl.create({
+      content:"Please wait...",
+    });
+    loading.present();
+    return loading;
   }
 
 }

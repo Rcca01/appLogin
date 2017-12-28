@@ -15,12 +15,12 @@ import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 
 const config = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: ""
+  apiKey: "AIzaSyAUwrRXA-rARo5JsdzseUi-2bsTgCX4ew0",
+  authDomain: "ionicfirebasechat-db5c3.firebaseapp.com",
+  databaseURL: "https://ionicfirebasechat-db5c3.firebaseio.com",
+  projectId: "ionicfirebasechat-db5c3",
+  storageBucket: "ionicfirebasechat-db5c3.appspot.com",
+  messagingSenderId: "24469855033"
 };
 
 @NgModule({
