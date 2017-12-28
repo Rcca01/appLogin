@@ -3,7 +3,7 @@ import { HomePage } from './../home/home';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Loading, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Loading, LoadingController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -28,12 +28,13 @@ export class LoginPage {
     public navParams: NavParams,
     private afAuth:AngularFireAuth,
     private loadingCtrl:LoadingController,
+    private alertCtrl:AlertController,
     private afBd:AngularFireDatabase,
     private formBuilder:FormBuilder) {
 
       this.loginForm = this.formBuilder.group({
         email:['',[Validators.required]],
-        password:['',[Validators.minLength(6)]],
+        password:['',[Validators.required, Validators.minLength(6)]],
       });
 
   }
@@ -43,14 +44,16 @@ export class LoginPage {
   }
 
   async login(){
+    let loading:Loading = this.showLoading();
     try{
-      let loading:Loading = this.showLoading();
       const result = await this.afAuth.auth.signInWithEmailAndPassword(this.loginForm.value.email,this.loginForm.value.password);
-      loading.dismiss();
       if(result){
         this.navCtrl.setRoot(HomePage);
+        loading.dismiss();
       }
     }catch(e){
+      loading.dismiss();
+      this.showAlert(e.message);
       console.error(e);
     }
   }
@@ -73,4 +76,10 @@ export class LoginPage {
     return loading;
   }
 
+  private showAlert(message:string):void{
+    this.alertCtrl.create({
+      message:message,
+      buttons:['OK']
+    }).present();
+  }
 }

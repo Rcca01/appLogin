@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Loading, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Loading, LoadingController, AlertController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { HomePage } from '../home/home';
@@ -29,6 +29,7 @@ export class CadastroPage {
     private afAuth:AngularFireAuth,
     private afBd:AngularFireDatabase,
     private loadingCtrl:LoadingController,
+    public alertCtrl:AlertController,
     private formBuilder:FormBuilder) {
 
       this.cadastroForm = this.formBuilder.group({
@@ -50,11 +51,16 @@ export class CadastroPage {
       const result = await this.afAuth.auth.createUserWithEmailAndPassword(user.email,user.password);
       if(result){
         delete user.password; //Removendo a senha para não inserir no banco do firebas
-        this.afBd.object('/users/'+result['uid']).set(user);
-        this.navCtrl.setRoot(HomePage);
-        loading.dismiss();
+        this.afBd.object('/users/'+result['uid']).set(user).then((res)=>{
+          this.navCtrl.setRoot(HomePage);
+          loading.dismiss();
+        }).catch(error =>{
+          this.showAlert(error);
+        });       
       }
     }catch(e){
+      loading.dismiss();
+      this.showAlert(e.message);
       console.error(e);
     }
   }
@@ -65,5 +71,12 @@ export class CadastroPage {
     });
     loading.present();
     return loading;
+  }
+
+  private showAlert(message:string):void{
+    this.alertCtrl.create({
+      message:message,
+      buttons:['OK']
+    }).present();
   }
 }
