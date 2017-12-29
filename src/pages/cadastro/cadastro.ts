@@ -5,6 +5,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { HomePage } from '../home/home';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as firebase from 'firebase';
 
 /**
  * Generated class for the CadastroPage page.
@@ -45,35 +46,36 @@ export class CadastroPage {
   }
 
   register() {
+    let loading:Loading = this.showLoading();
     let user = this.cadastroForm.value;
-    let list: Observable<boolean> = this.userExists(user.username);
-      list.subscribe(dados => {
-        if (!dados) {
-          this.createUser(user);
-        }else{
-          this.showAlert('Username "'+user.username+'" já está sendo usado!');
-        }
-      });
+    this.userExists(user.username).subscribe(dados => {
+      if (!dados) {
+        this.createUser(user).subscribe((result)=>{
+          this.showAlert(result['message']);
+          if(result['status'] == true){
+            this.navCtrl.setRoot(HomePage);
+            loading.dismiss();
+          }
+          loading.dismiss();
+        });
+      }else{
+        this.showAlert('Username "'+user.username+'" já está sendo usado!');
+        loading.dismiss();
+      }
+    });
   }
 
-  async createUser(user){
-    let loading:Loading = this.showLoading();
-    try{
-      const result = await this.afAuth.auth.createUserWithEmailAndPassword(user.email,user.password);
-      if(result){
-        delete user.password; //Removendo a senha para não inserir no banco do firebas
-        this.afBd.object('/users/'+result['uid']).set(user).then((res)=>{
-          this.navCtrl.setRoot(HomePage);
-          loading.dismiss();
-        }).catch(error =>{
-          this.showAlert(error);
-        });       
-      }
-    }catch(e){
-      loading.dismiss();
-      this.showAlert(e.message);
-      console.error(e);
-    }
+  createUser(user):Observable<[{}]>{
+    return this.afAuth.auth.createUserWithEmailAndPassword(user.email,user.password).then((userDados)=>{
+      delete user.password; //Removendo a senha para não inserir no banco do firebase
+      this.afBd.object('/users/'+userDados['uid']).set(user).then((res)=>{
+        return {'message':'Usuário cadastrado','status':true};
+      }).catch(error =>{
+        return {'message':'Erro ao inserir usuário na base de dados','status':false};
+      });
+    }).catch((error)=>{        
+      return {'message':'Erro ao criar usuário',status:false};
+    });
   }
 
   private userExists(username: string): Observable<boolean> {
