@@ -1,4 +1,5 @@
 import { CadastroPage } from './../pages/cadastro/cadastro';
+import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -13,6 +14,9 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
+import { UserProvider } from '../providers/user/user.provider';
+import { BaseProvider } from '../providers/base/base.provider';
+import { AuthProvider } from '../providers/auth/auth.provider';
 
 const config = {
   apiKey: "",
@@ -32,6 +36,7 @@ const config = {
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(config),
     AngularFireAuthModule,
@@ -47,7 +52,10 @@ const config = {
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    UserProvider,
+    BaseProvider,
+    AuthProvider
   ]
 })
 export class AppModule {}

@@ -1,3 +1,4 @@
+import { AuthProvider } from './../../providers/auth/auth.provider';
 import { CadastroPage } from './../cadastro/cadastro';
 import { HomePage } from './../home/home';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -22,6 +23,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginPage {
 
   loginForm:FormGroup;
+  user:User;
 
   constructor(
     public navCtrl: NavController, 
@@ -30,42 +32,34 @@ export class LoginPage {
     private loadingCtrl:LoadingController,
     private alertCtrl:AlertController,
     private afBd:AngularFireDatabase,
-    private formBuilder:FormBuilder) {
+    private formBuilder:FormBuilder,
+    private authProvider:AuthProvider) {
 
       this.loginForm = this.formBuilder.group({
         email:['',[Validators.required]],
         password:['',[Validators.required, Validators.minLength(6)]],
       });
-
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
   }
 
-  async login(){
+  login(){
     let loading:Loading = this.showLoading();
-    try{
-      const result = await this.afAuth.auth.signInWithEmailAndPassword(this.loginForm.value.email,this.loginForm.value.password);
-      if(result){
-        this.navCtrl.setRoot(HomePage);
-        loading.dismiss();
-      }
-    }catch(e){
+    this.authProvider.signIn(this.loginForm.value.email,this.loginForm.value.password).then((user)=>{
+      this.user = user;
+      this.navCtrl.setRoot(HomePage);
       loading.dismiss();
-      this.showAlert(e.message);
-      console.error(e);
-    }
+    }).catch((error:any)=>{
+      console.log(error);
+      loading.dismiss();
+      this.showAlert(error);
+    })
   }
 
   register(){
     this.navCtrl.push(CadastroPage);
-  }
-
-  getListaUser():Observable<any[]>{
-    return this.afBd.list('users').snapshotChanges().map(changes => {
-      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
-    });
   }
 
   private showLoading():Loading{

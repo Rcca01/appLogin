@@ -1,3 +1,4 @@
+import { LoginPage } from './../login/login';
 import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Loading, LoadingController, AlertController } from 'ionic-angular';
@@ -5,7 +6,12 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { HomePage } from '../home/home';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as firebase from 'firebase';
+
+import { AuthProvider } from './../../providers/auth/auth.provider';
+import { UserProvider } from './../../providers/user/user.provider';
+
+
+import 'rxjs/add/operator/first';
 
 /**
  * Generated class for the CadastroPage page.
@@ -31,7 +37,9 @@ export class CadastroPage {
     private afBd: AngularFireDatabase,
     private loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private userProvider:UserProvider,
+    private authProvier:AuthProvider) {
 
     this.cadastroForm = this.formBuilder.group({
       nome: ['', [Validators.required, Validators.minLength(3)]],
@@ -46,43 +54,37 @@ export class CadastroPage {
   }
 
   register() {
-    let loading:Loading = this.showLoading();
     let user = this.cadastroForm.value;
-    this.userExists(user.username).subscribe(dados => {
-      if (!dados) {
-        this.createUser(user).subscribe((result)=>{
-          this.showAlert(result['message']);
-          if(result['status'] == true){
-            this.navCtrl.setRoot(HomePage);
+    let loading =  this.showLoading();
+    this.userProvider.userExists(user.username)
+    .first()
+    .subscribe((userExists:Boolean)=>{
+      if(!userExists){
+        this.authProvier.createAuthUser(user.email,user.password).then((authState:any)=>{
+          delete user.password;
+          user.uid = authState.uid;
+          this.userProvider.createUser(user).then(()=>{
+            this.showAlert('Registro efetuado');
+            this.navCtrl.setRoot(LoginPage);
             loading.dismiss();
-          }
+          }).catch((error:any)=>{
+            console.log(error);
+            loading.dismiss();
+            this.showAlert(error);
+          });
+        }).catch((error:any)=>{
+          console.log(error);
           loading.dismiss();
+          this.showAlert(error);
         });
       }else{
-        this.showAlert('Username "'+user.username+'" já está sendo usado!');
+        this.showAlert('O username '+user.username+' Já está sendo usado');
         loading.dismiss();
       }
     });
   }
 
-  createUser(user):Observable<[{}]>{
-    return this.afAuth.auth.createUserWithEmailAndPassword(user.email,user.password).then((userDados)=>{
-      delete user.password; //Removendo a senha para não inserir no banco do firebase
-      this.afBd.object('/users/'+userDados['uid']).set(user).then((res)=>{
-        return {'message':'Usuário cadastrado','status':true};
-      }).catch(error =>{
-        return {'message':'Erro ao inserir usuário na base de dados','status':false};
-      });
-    }).catch((error)=>{        
-      return {'message':'Erro ao criar usuário',status:false};
-    });
-  }
-
-  private userExists(username: string): Observable<boolean> {
-    return this.afBd.list('/users', ref => ref.orderByChild('username').equalTo(username)).valueChanges().map((user) => {
-      return user.length > 0;
-    });
-  }
+  
 
   private showLoading(): Loading {
     let loading: Loading = this.loadingCtrl.create({
