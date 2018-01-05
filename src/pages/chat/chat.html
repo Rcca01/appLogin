@@ -1,0 +1,24 @@
+<ion-header>
+  <modify-logged-header [title]="pageTitle | capitalize:true"></modify-logged-header>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list no-lines>
+    <ion-item *ngFor="let message of messages">{{ message }}</ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item no-lines>
+      <ion-input type="text" placeholder="Menssage..." [(ngModel)]="newMessage" (keyup.enter)="sendMessage(newMessage); newMessage=''" ></ion-input>
+      <button ion-button item-right (click)="sendMessage(newMessage); newMessage=''">
+        <ion-icon name="send"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

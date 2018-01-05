@@ -1,6 +1,10 @@
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs/Observable';
 import { BaseProvider } from './../base/base.provider';
 import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
+
+import * as firebase from 'firebase/app';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 /*
@@ -14,7 +18,8 @@ export class AuthProvider extends BaseProvider {
 
   constructor(
     public http: Http,
-    private afAuth:AngularFireAuth) {
+    private afAuth:AngularFireAuth,
+    private afBd:AngularFireDatabase) {
       super();
     console.log('Hello AuthProvider Provider');
   }
@@ -27,6 +32,20 @@ export class AuthProvider extends BaseProvider {
   createAuthUser(email,password){
     return this.afAuth.auth.createUserWithEmailAndPassword(email,password)
       .catch(this.handlePromiseError);
+  }
+
+  logout():Promise<void>{
+    return this.afAuth.auth.signOut();
+  }
+
+  // Returns true if user is logged in
+  get authenticated(): boolean {
+    return this.afAuth.auth.currentUser ? true : false;
+  }
+
+  // Returns
+  get currentUserObservable(): Observable<any> {
+    return this.authenticated ? this.afAuth.authState : Observable.of(null);
   }
 
 }

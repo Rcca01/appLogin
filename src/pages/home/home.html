@@ -1,14 +1,29 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
+  <modify-logged-header [title]="view | capitalize:true"></modify-logged-header>
+
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="view">
+      <ion-segment-button value="chats">
+        Chats
+      </ion-segment-button>
+      <ion-segment-button value="users">
+        Users
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <div [ngSwitch]="view">
+
+    <ion-list *ngSwitchCase="'chats'" no-lines>
+      <ion-item>Chats</ion-item>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'users'" no-lines>
+      <button ion-item *ngFor="let user of usersLista | async" (click)="onChatCreate(user)">{{user.nome}}</button>
+    </ion-list>
+
+  </div>
 </ion-content>

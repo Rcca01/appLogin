@@ -1,4 +1,3 @@
-import { LoginPage } from './../login/login';
 import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Loading, LoadingController, AlertController } from 'ionic-angular';
@@ -62,10 +61,9 @@ export class CadastroPage {
       if(!userExists){
         this.authProvier.createAuthUser(user.email,user.password).then((authState:any)=>{
           delete user.password;
-          user.uid = authState.uid;
-          this.userProvider.createUser(user).then(()=>{
+          this.userProvider.createUser(user,authState.uid).then(()=>{
             this.showAlert('Registro efetuado');
-            this.navCtrl.setRoot(LoginPage);
+            this.navCtrl.setRoot(HomePage);
             loading.dismiss();
           }).catch((error:any)=>{
             console.log(error);

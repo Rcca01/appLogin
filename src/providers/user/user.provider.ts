@@ -1,9 +1,11 @@
+import { AuthProvider } from './../auth/auth.provider';
 import { Observable } from 'rxjs/Observable';
 import { BaseProvider } from './../base/base.provider';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { AngularFireObject } from 'angularfire2/database/interfaces';
+import { User } from '../../shared/models/user.models';
 
 
 /*
@@ -15,18 +17,29 @@ import { AngularFireObject } from 'angularfire2/database/interfaces';
 @Injectable()
 export class UserProvider extends BaseProvider {
 
+  listUserObservable:Observable<any>;
+
   constructor(
     public http: Http,
-    public afBd:AngularFireDatabase) {
+    public afBd:AngularFireDatabase,
+    private afAuth:AuthProvider,
+  ) {
     
       super();
+      this.listaUsersAuth();
       console.log('Hello UserProvider Provider');
   }
 
-  createUser(user):Promise<void>{
-    return this.afBd.object('/users/'+user.uid)
+  createUser(user, uid):Promise<void>{
+    return this.afBd.object('/users/'+uid)
       .set(user)
       .catch(this.handlePromiseError);
+  }
+
+  private getUsersNotLogged(uidToExcluir:string):void{
+    this.listUserObservable =  this.afBd.list('users').snapshotChanges().map(changes => {
+      return changes.map(c => ({ uid: c.payload.key, ...c.payload.val() })).filter((user)=>user.uid !== uidToExcluir);
+    });
   }
 
   userExists(username: string): Observable<boolean> {
@@ -37,7 +50,19 @@ export class UserProvider extends BaseProvider {
 
   getListaUser():Observable<any[]>{
     return this.afBd.list('users').snapshotChanges().map(changes => {
-      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
+      return changes.map(c => ({ uid: c.payload.key, ...c.payload.val() }));
     });
   }
+
+  getDadosUser(uid:string):Observable<any[]>{
+    return this.afBd.list('users/'+uid).valueChanges();
+  }
+
+  private listaUsersAuth(){
+    console.log('Nova chamada a lista de users');
+    this.afAuth.currentUserObservable.subscribe((user)=>{
+      user ? this.getUsersNotLogged(user.uid) : null;
+    });
+  }
+
 }

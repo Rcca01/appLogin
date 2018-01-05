@@ -17,6 +17,10 @@ import { LoginPage } from '../pages/login/login';
 import { UserProvider } from '../providers/user/user.provider';
 import { BaseProvider } from '../providers/base/base.provider';
 import { AuthProvider } from '../providers/auth/auth.provider';
+import { ModifyLoggedHeaderComponent } from '../components/modify-logged-header/modify-logged-header';
+import { CapitalizePipe } from './../pipes/capitalize.pipe';
+import { ChatPage } from '../pages/chat/chat';
+import { ChatProvider } from '../providers/chat/chat.provider';
 
 const config = {
   apiKey: "",
@@ -29,7 +33,10 @@ const config = {
 
 @NgModule({
   declarations: [
+    CapitalizePipe,
+    ModifyLoggedHeaderComponent,
     MyApp,
+    ChatPage,
     HomePage,
     LoginPage,
     CadastroPage
@@ -45,6 +52,7 @@ const config = {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    ChatPage,
     HomePage,
     LoginPage,
     CadastroPage
@@ -55,7 +63,8 @@ const config = {
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     UserProvider,
     BaseProvider,
-    AuthProvider
+    AuthProvider,
+    ChatProvider
   ]
 })
 export class AppModule {}

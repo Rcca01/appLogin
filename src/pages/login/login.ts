@@ -23,7 +23,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginPage {
 
   loginForm:FormGroup;
-  user:User;
+  user:UserAuth;
 
   constructor(
     public navCtrl: NavController, 
@@ -75,5 +75,9 @@ export class LoginPage {
       message:message,
       buttons:['OK']
     }).present();
+  }
+
+  onHome(){
+    this.navCtrl.push(HomePage);
   }
 }
