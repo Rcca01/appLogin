@@ -54,8 +54,8 @@ export class UserProvider extends BaseProvider {
     });
   }
 
-  getDadosUser(uid:string):Observable<any[]>{
-    return this.afBd.list('users/'+uid).valueChanges();
+  getDadosUser(uid:string):Observable<{}>{
+    return this.afBd.object('/users/'+uid).valueChanges().catch(this.handleObservableError);
   }
 
   private listaUsersAuth(){

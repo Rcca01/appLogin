@@ -10,7 +10,7 @@ import { NavController } from 'ionic-angular';
 import 'rxjs/add/operator/first';
 import { User } from './../../shared/models/user.models';
 import { Chat } from '../../shared/models/chat.models';
-import { firebase } from '@firebase/app';
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'page-home',
@@ -19,6 +19,8 @@ import { firebase } from '@firebase/app';
 export class HomePage {
 
   usersLista:Observable<User[]>;
+  chatsLista:Observable<Chat[]>;
+
   view:string = 'chats';
 
   constructor(
@@ -36,6 +38,7 @@ export class HomePage {
 
   ionViewDidLoad(){
     this.usersLista = this.userProvider.listUserObservable;
+    this.chatsLista = this.chatProvider.listChatsObservable;
     /*this.authProvider.currentUserObservable
     .first()
     .subscribe((user)=>{
@@ -53,10 +56,10 @@ export class HomePage {
           .subscribe((chat:Chat)=>{
           let dadosUserLogged = this.userProvider.getDadosUser(userLogged.uid);
             if(!chat){
-              dadosUserLogged.subscribe((infouser)=>{
+              dadosUserLogged.subscribe((infouser:User)=>{
                 let timestamp:Object = firebase.database.ServerValue.TIMESTAMP;
                 //Chat user logged
-                this.chatProvider.startChat(new Chat('',timestamp,infouser[1],''),user.uid,userLogged.uid);
+                this.chatProvider.startChat(new Chat('',timestamp,infouser.nome,''),user.uid,userLogged.uid);
                 //Chat user send
                 this.chatProvider.startChat(new Chat('',timestamp,user.nome,''),userLogged.uid,user.uid);
               });
@@ -67,5 +70,17 @@ export class HomePage {
     this.navCtrl.push(ChatPage,{
       infoUser:user
     });
+  }
+
+  openChat(uidDestinatario:string):void{
+    this.userProvider.getDadosUser(uidDestinatario)
+    .first()
+    .subscribe((user:User)=>{
+      user.uid = uidDestinatario;
+      console.log(user);
+      this.navCtrl.push(ChatPage,{
+        infoUser:user
+      });
+    })
   }
 }

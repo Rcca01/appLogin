@@ -1,5 +1,7 @@
 export class Chat{
 
+    public uid:string;
+
     constructor(
         public lastMessage:string,
         public timestamp:any,
