@@ -1,6 +1,5 @@
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs';
-import { Http } from '@angular/http';
 
 
 const extractError = (error: Response | any): string => {

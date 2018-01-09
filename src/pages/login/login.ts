@@ -1,11 +1,8 @@
 import { AuthProvider } from './../../providers/auth/auth.provider';
 import { CadastroPage } from './../cadastro/cadastro';
 import { HomePage } from './../home/home';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Loading, LoadingController, AlertController } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 /**
@@ -23,15 +20,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginPage {
 
   loginForm:FormGroup;
-  user:UserAuth;
+  user:any;
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
-    private afAuth:AngularFireAuth,
     private loadingCtrl:LoadingController,
     private alertCtrl:AlertController,
-    private afBd:AngularFireDatabase,
     private formBuilder:FormBuilder,
     private authProvider:AuthProvider) {
 

@@ -1,4 +1,3 @@
-import { AngularFireDatabase } from 'angularfire2/database';
 import { ChatProvider } from './../../providers/chat/chat.provider';
 import { ChatPage } from './../chat/chat';
 import { UserProvider } from './../../providers/user/user.provider';
@@ -39,12 +38,6 @@ export class HomePage {
   ionViewDidLoad(){
     this.usersLista = this.userProvider.listUserObservable;
     this.chatsLista = this.chatProvider.listChatsObservable;
-    /*this.authProvider.currentUserObservable
-    .first()
-    .subscribe((user)=>{
-      console.log(user.uid);
-      this.usersLista = this.userProvider.getUsersNotLogged(user.uid);
-    });*/
   }
 
   onChatCreate(user:User){
@@ -77,7 +70,6 @@ export class HomePage {
     .first()
     .subscribe((user:User)=>{
       user.uid = uidDestinatario;
-      console.log(user);
       this.navCtrl.push(ChatPage,{
         infoUser:user
       });

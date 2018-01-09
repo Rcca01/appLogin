@@ -1,14 +1,12 @@
-import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Loading, LoadingController, AlertController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { HomePage } from '../home/home';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthProvider } from './../../providers/auth/auth.provider';
 import { UserProvider } from './../../providers/user/user.provider';
-
 
 import 'rxjs/add/operator/first';
 
@@ -32,8 +30,6 @@ export class CadastroPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private afAuth: AngularFireAuth,
-    private afBd: AngularFireDatabase,
     private loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
     private formBuilder: FormBuilder,

@@ -1,11 +1,9 @@
 import { AuthProvider } from './../auth/auth.provider';
 import { Observable } from 'rxjs/Observable';
 import { BaseProvider } from './../base/base.provider';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { AngularFireObject } from 'angularfire2/database/interfaces';
-import { User } from '../../shared/models/user.models';
 
 
 /*
@@ -17,7 +15,7 @@ import { User } from '../../shared/models/user.models';
 @Injectable()
 export class UserProvider extends BaseProvider {
 
-  listUserObservable:Observable<any>;
+  listUserObservable:Observable<any[]>;
 
   constructor(
     public http: Http,
@@ -37,7 +35,7 @@ export class UserProvider extends BaseProvider {
   }
 
   private getUsersNotLogged(uidToExcluir:string):void{
-    this.listUserObservable =  this.afBd.list('users').snapshotChanges().map(changes => {
+    this.listUserObservable =  this.afBd.list('/users').snapshotChanges().map(changes => {
       return changes.map(c => ({ uid: c.payload.key, ...c.payload.val() })).filter((user)=>user.uid !== uidToExcluir);
     });
   }

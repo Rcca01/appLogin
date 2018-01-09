@@ -21,6 +21,7 @@ import { ModifyLoggedHeaderComponent } from '../components/modify-logged-header/
 import { CapitalizePipe } from './../pipes/capitalize.pipe';
 import { ChatPage } from '../pages/chat/chat';
 import { ChatProvider } from '../providers/chat/chat.provider';
+import { MessageProvider } from '../providers/message/message.provider';
 
 const config = {
   apiKey: "",
@@ -64,7 +65,8 @@ const config = {
     UserProvider,
     BaseProvider,
     AuthProvider,
-    ChatProvider
+    ChatProvider,
+    MessageProvider
   ]
 })
 export class AppModule {}

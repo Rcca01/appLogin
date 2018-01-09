@@ -3,8 +3,6 @@ import { Observable } from 'rxjs/Observable';
 import { BaseProvider } from './../base/base.provider';
 import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
-
-import * as firebase from 'firebase/app';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 /*
@@ -18,9 +16,9 @@ export class AuthProvider extends BaseProvider {
 
   constructor(
     public http: Http,
-    private afAuth:AngularFireAuth,
-    private afBd:AngularFireDatabase) {
-      super();
+    private afAuth:AngularFireAuth
+  ) {
+    super();
     console.log('Hello AuthProvider Provider');
   }
 

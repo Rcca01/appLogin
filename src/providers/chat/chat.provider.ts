@@ -1,6 +1,5 @@
-import { User } from './../../shared/models/user.models';
 import { Observable } from 'rxjs/Observable';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
 import { Chat } from './../../shared/models/chat.models';
 import { BaseProvider } from './../base/base.provider';
 import { Http } from '@angular/http';
@@ -38,8 +37,12 @@ export class ChatProvider extends BaseProvider{
     return this.afBd.object('/chats/'+userLoggedUid+'/'+userChatUid).valueChanges().catch(this.handleObservableError);
   }
 
+  getRefChat(userLoggedUid:string, userChatUid:string):AngularFireObject<Chat>{
+    return this.afBd.object('/chats/'+userLoggedUid+'/'+userChatUid);
+  }
+
   getChatsUserLogged():void{
-    this.afAuth.authState.subscribe((user:User)=>{
+    this.afAuth.authState.subscribe((user)=>{
       user ? this.getChats(user.uid) : this.listChatsObservable = Observable.of(null);
     });
   }
