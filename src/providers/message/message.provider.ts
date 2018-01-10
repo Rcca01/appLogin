@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { AngularFireList } from 'angularfire2/database';
+import { BehaviorSubject } from 'rxjs';
 
 /*
   Generated class for the MessageProvider provider.
@@ -26,7 +27,7 @@ export class MessageProvider {
   }
 
   getMessagesChats(uidUser1:string, uidUser2:string):Observable<Message[]>{
-    return this.afBd.list('/messages/'+uidUser1+'-'+uidUser2, ref => ref.orderByChild('timestamp'))
+    return this.afBd.list('/messages/'+uidUser1+'-'+uidUser2, ref => ref.orderByChild('timestamp').limitToLast(30))
     .snapshotChanges()
     .map(changes => {
       return changes.map(c => ({ uid: c.payload.key, ...c.payload.val() }));

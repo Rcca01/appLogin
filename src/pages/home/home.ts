@@ -40,6 +40,33 @@ export class HomePage {
     this.chatsLista = this.chatProvider.listChatsObservable;
   }
 
+  searchList(event:any){
+    let search = event.target.value;
+
+    this.usersLista = this.userProvider.listUserObservable;
+    this.chatsLista = this.chatProvider.listChatsObservable;
+
+    if(search){
+      switch(this.view){
+        case 'chats':
+          this.chatsLista = <Observable<Chat[]>>this.chatsLista.map((chats:Chat[])=>{
+            return chats.filter((chat:Chat)=>{
+              return (chat.title.toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1);
+            });
+          });
+        break;
+        case 'users':
+          this.usersLista = <Observable<User[]>>this.usersLista.map((users:User[])=>{
+            return users.filter((user:User)=>{
+              return (user.nome.toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) > -1);
+            });
+          });
+        break; 
+      }
+    }
+
+  }
+
   onChatCreate(user:User){
     this.authProvider.currentUserObservable
       .first()
