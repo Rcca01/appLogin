@@ -1,4 +1,3 @@
-import { AngularFireDatabase } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
 import { BaseProvider } from './../base/base.provider';
 import { Http } from '@angular/http';

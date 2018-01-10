@@ -6,9 +6,7 @@
 
 <ion-content padding>
 
-  <ion-list no-lines>
-    <ion-item *ngFor="let message of listMessagesChat | async">{{ message.text }}</ion-item>
-  </ion-list>
+    <box-message *ngFor="let message of listMessagesChat | async" [sendMessage]="message" [sendFor]="(userLogged.uid === message.uid)">{{ message.text }}</box-message>
 
 </ion-content>
 

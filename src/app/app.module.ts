@@ -1,3 +1,4 @@
+import { BoxMessageComponent } from './../components/box-message/box-message';
 import { CadastroPage } from './../pages/cadastro/cadastro';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
@@ -40,6 +41,7 @@ const config = {
     ChatPage,
     HomePage,
     LoginPage,
+    BoxMessageComponent,
     CadastroPage
   ],
   imports: [

@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Loading, LoadingController, AlertController } from 'ionic-angular';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { HomePage } from '../home/home';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 

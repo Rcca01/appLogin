@@ -1,0 +1,18 @@
+box-message {
+
+    display: flex;
+    margin-bottom: 10px;
+
+    .text{
+        width: 75%;
+        p{
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 1.1em;
+        }
+        p.timestamp{
+            font-size: 0.8em;
+            color: #0e0e0e;
+        }
+    }
+}
